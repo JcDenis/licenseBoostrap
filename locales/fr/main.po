@@ -1,0 +1,73 @@
+# Language: Français
+# Module: licenseBootstrap - 2013.10.25
+# Date: 2013-10-28 10:27:47
+# Translated with translater 2013.05.11
+
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: licenseBootstrap 2013.10.25\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-10-28T10:27:47+00:00\n"
+"Last-Translator: Jean-Christian Denis\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: _config.php:56
+msgid "Configuration has been successfully updated."
+msgstr "La configuration a été mise à jour avec succés."
+
+#: _config.php:71
+#: _config.php:124
+msgid "Files"
+msgstr "Fichiers"
+
+#: _config.php:75
+msgid "Overwrite existing licenses"
+msgstr "Écraser les licences existantes"
+
+#: _config.php:80
+msgid "Add full LICENSE file to module root"
+msgstr "Ajouter le fichier de licence complet à la racine du module"
+
+#: _config.php:85
+msgid "Add license block to PHP files"
+msgstr "Ajouter le bloc de licence aux ficheirs PHP"
+
+#: _config.php:90
+msgid "Add license block to JS files"
+msgstr "Ajouter le bloc de licence aux ficheirs JS"
+
+#: _config.php:95
+msgid "Do not add license block to files from locales folder"
+msgstr "Ne pas ajouter la licence aux fichiers du dossier locales"
+
+#: _config.php:101
+msgid "Licenses"
+msgstr "Licences"
+
+#: _config.php:114
+msgid "License %s:"
+msgstr "Licence %s :"
+
+#: inc/lib.license.bootstrap.php:40
+msgid "Id"
+msgstr "Id"
+
+#: inc/lib.license.bootstrap.php:43
+msgid "Root"
+msgstr "Racine"
+
+#: inc/lib.license.bootstrap.php:79
+msgid "Add license to selected modules"
+msgstr "Ajouter la licence aux modules selectionner"
+
+#: index.php:67
+msgid "License successfully added."
+msgstr "Licence ajouter avec succès"
+
+#: index.php:119
+msgid "Configuration"
+msgstr "Configuration"
+

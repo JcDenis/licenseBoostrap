@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>LicenseBootstrap</title>
+</head>
+<body>
+
+<h3>À propos</h3>
+<p>Cette extension permet d'ajouter simplement une licence à tous le fichier d'une extension.<br />
+Les changements se font sur les modules installés. Ces changements sont irréversibles.</p>
+<h3>Paramètres des fichiers</h3>
+<dl>
+  <dt>Écraser la licence existante</dt>
+  <dd>Réécrit la licence dans les fichiers même si elle existe déjà. (recommandé)</dd>
+
+  <dt>Ajouter le fichier de licence complet à la racine du module</dt>
+  <dd>Comme son nom l'indique, cela ajoute la licence complête dans le fichier LICENSE à la racine du module. (recommandé)</dd>
+
+  <dt>Ajouter le bloc de licence aux ficheirs PHP</dt>
+  <dd>Permet d'ajouter le bloc de licence court aux fichiers php du module. (recommandé)</dd>
+
+  <dt>Ajouter le bloc de licence aux ficheirs JS</dt>
+  <dd>Permet d'ajouter le bloc de licence court aux fichiers javascript du module.</dd>
+
+  <dt>Ne pas ajouter la licence aux fichiers du dossier locales</dt>
+  <dd>Les fichiers de traduction présent dans le réperoire <em>locales</em> du module ne seront pas changés. A noter que si un répertoire <em>libs</em> est présent dans le module, celui ci ne sera pas changé non plus.</dd>
+</dl>
+
+<h3>Paramètres des licences</h3>
+<p>Les entêtes sont les résumés de licence. Elles sont placées en haut de chaque fichier d'un module sous forme de commentaire.
+Pour les plugins il est préférable de choisir la licence GPL2 qui correspond à la licence de Dotclear.
+Il est possible de modifier une entête et certaines informations directement en rapport avec 
+le module peuvent être écrites dans une entête en utilisant les masques suivants&nbsp;:</p>
+<dl>
+  <dt>%year%</dt>
+  <dd>Année en cours.</dd>
+  <dt>%module_id%</dt>
+  <dd>Id du module (nom correspondant au dossier du module).</dd>
+  <dt>%module_name%</dt>
+  <dd>Le nom du module tel qu'il est défini dans le fichier _define.php.</dd>
+  <dt>%module_author%</dt>
+  <dd>Le nom de l'auteur du module tel qu'il est définie dans le fichier _define.php.</dd>
+  <dt>%module_type%</dt>
+  <dd>Soit plugin, soit thème.</dd>
+  <dt>%user_cn%</dt>
+  <dd>Le nom commun de l'utilisateur qui utilise licenseBootstrap.</dd>
+  <dt>%user_name%</dt>
+  <dd>Le nom de l'utilisateur qui utilise licenseBootstrap.</dd>
+  <dt>%user_email%</dt>
+  <dd>L'adresse email de l'utilisateur qui utilise licenseBootstrap.</dd>
+  <dt>%user_url%</dt>
+  <dd>L'adresse web de l'utilisateur qui utilise licenseBootstrap.</dd>
+</dl>
+<p>Pour chaque licence présente dans cette liste, un fichier LICENSE complet est également disponible.</p>
+
+<h3>Support</h3>
+<p>Si vous souhaitez plus d'aide ou apporter votre contribution à cette extension, voici quelques liens utiles.</p>
+<ul>
+  <li><a href="http://forum.dotclear.org/viewtopic.php?id=40798">Sujet sur le forum Dotclear</a></li>
+  <li><a href="http://lab.dotclear.org/wiki/plugin/licenseBootstrap">Dépôt svn</a></li>
+  <li><a href="https://bitbucket.org/JcDenis/licensebootstrap">Dépôt hg</a></li>
+  <li><a href="http://jcd.lv/licenseBootstrap">Billet dédié sur le blog de l'auteur</a></li>
+</ul>
+
+</body>
+</html>
