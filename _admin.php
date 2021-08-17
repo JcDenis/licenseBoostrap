@@ -61,7 +61,7 @@ class licenseBootstrapBehaviors
             && $params['p'] == 'licenseBootstrap';
     }
 
-    public static function packmanBeforeCreatePackage($core, $module, $a, $b, $c, $d)
+    public static function packmanBeforeCreatePackage($core, $module)
     {
         licenseBootstrap::addLicense($core, $module);
     }
