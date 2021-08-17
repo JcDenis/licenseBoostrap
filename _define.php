@@ -13,25 +13,19 @@
 # -- END LICENSE BLOCK ------------------------------------
 
 if (!defined('DC_RC_PATH')) {
-
-	return null;
+    return null;
 }
 
 $this->registerModule(
-	/* Name */
-	"License bootstrap",
-	/* Description*/
-	"Add license to your plugins and themes",
-	/* Author */
-	"Jean-Christian Denis",
-	/* Version */
-	'2013.12.01',
-	/* Properties */
-	array(
-		'permissions' => null,
-		'type' => 'plugin',
-		'dc_min' => '2.6',
-		'support' => 'http://jcd.lv/q=licenseBootstrap',
-		'details' => 'http://plugins.dotaddict.org/dc2/details/licenseBootstrap'
-	)
+    'License bootstrap', // Name
+    'Add license to your plugins and themes', // Description
+    'Jean-Christian Denis', // Author
+    '2021.08.17', // Version
+    [
+        'permissions' => null,
+        'type' => 'plugin',
+        'dc_min' => '2.19',
+        'support' => 'https://github.com/JcDenis/licenseBootstrap',
+        'details' => 'https://plugins.dotaddict.org/dc2/details/licenseBootstrap'
+    ]
 );

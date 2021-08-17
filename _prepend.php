@@ -13,11 +13,10 @@
 # -- END LICENSE BLOCK ------------------------------------
 
 if (!defined('DC_RC_PATH')) {
-
-	return null;
+    return null;
 }
 
 $d = dirname(__FILE__).'/inc/';
 
-$__autoload['licenseBootstrap']	= $d.'class.license.bootstrap.php';
-$__autoload['libLicenseBootstrap']	= $d.'lib.license.bootstrap.php';
+$__autoload['licenseBootstrap'] = $d.'class.license.bootstrap.php';
+$__autoload['libLicenseBootstrap']  = $d.'lib.license.bootstrap.php';

@@ -25,3 +25,9 @@ go to ''configure plugin'', fill in form.
 
 Once it's done you can manage your modules license from menu 
 ''License bootstrap'' on sidebar or you can add dashboard icon.
+
+## MORE
+
+ * License : GNU GPL v2
+ * Source & contribution : [GitHub Page](https://github.com/licenseBootstrap)
+ * Packages & details:  [Dotaddict Page](https://plugins.dotaddict.org/dc2/details/licenseBootstrap)
