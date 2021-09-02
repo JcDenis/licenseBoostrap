@@ -19,7 +19,7 @@ $this->registerModule(
     'License bootstrap', // Name
     'Add license to your plugins and themes', // Description
     'Jean-Christian Denis', // Author
-    '2021.08.17', // Version
+    '2021.08.17.1', // Version
     [
         'permissions' => null,
         'type' => 'plugin',
