@@ -13,9 +13,9 @@
 
 if (!defined('DC_RC_PATH')) {
 
-	return null;
+    return null;
 }
 
 if (!empty($_REQUEST['module']) && $_REQUEST['module'] == 'licenseBootstrap') {
-	$__resources['help']['core_plugins_conf'] = dirname(__FILE__).'/help/help.html';
+    $__resources['help']['core_plugins_conf'] = dirname(__FILE__).'/help/help.html';
 }

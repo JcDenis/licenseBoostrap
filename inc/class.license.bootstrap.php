@@ -1,15 +1,15 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
-#
-# This file is part of licenseBootstrap, a plugin for Dotclear 2.
-# 
-# Copyright (c) 2009-2021 Jean-Christian Denis and contributors
-# 
-# Licensed under the GPL version 2.0 license.
-# A copy of this license is available in LICENSE file or at
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK ------------------------------------
+/**
+ * @brief licenseBootstrap, a plugin for Dotclear 2
+ * 
+ * @package Dotclear
+ * @subpackage Plugin
+ * 
+ * @author Jean-Christian Denis
+ * 
+ * @copyright Jean-Christian Denis
+ * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
@@ -98,7 +98,7 @@ class licenseBootstrap
     {
         return in_array($name, self::getLicenses()) ? $name : 'gpl2';
     }
- 
+
     /**
      * Get license header.
      * 
@@ -350,9 +350,9 @@ class licenseBootstrap
         if (!$dir) {
             $dir = $path;
         }
-        
+
         $files = files::scandir($path);
-        
+
         foreach($files AS $file) {
             if (substr($file, 0, 1) == '.') {
                 continue;
@@ -376,7 +376,7 @@ class licenseBootstrap
     {
         return base64_encode(serialize($a));
     }
-    
+
     public static function decode($a)
     {
         return unserialize(base64_decode($a));

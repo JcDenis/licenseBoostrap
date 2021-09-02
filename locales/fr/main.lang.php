@@ -46,5 +46,3 @@ $GLOBALS['__l10n']['License successfully added.'] = 'Licence ajouter avec succè
 
 #index.php:119
 $GLOBALS['__l10n']['Configuration'] = 'Configuration';
-
-?>
