@@ -1,10 +1,11 @@
 <modules xmlns:da="http://dotaddict.org/da/">
 <module id="licenseBootstrap">
 <name>License bootstrap</name>
-<version>2021.08.17.1</version>
+<version>2021.09.10</version>
 <author>Jean-Christian Denis</author>
 <desc>Add license to your plugins and themes</desc>
-<file>https://github.com/JcDenis/licenseBootstrap/releases/download/v2021.08.17.1/plugin-licenseBootstrap.zip</file>
+<file>https://github.com/JcDenis/licenseBootstrap/releases/download/v2021.09.10/plugin-licenseBootstrap.zip</file>
+<da:dcmin>2.19</da:dcmin>
 <da:details>https://plugins.dotaddict.org/dc2/details/licenseBootstrap</da:details>
 <da:support>https://github.com/JcDenis/licenseBootstrap</da:support>
 </module>
