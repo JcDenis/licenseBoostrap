@@ -1,3 +1,6 @@
+2022.11.20
+- fix compatibility with Dotclear 2.24 (required)
+
 2021.09.10
 - clean up code
 - Tested for Dotclear 2.19

@@ -1,34 +1,32 @@
 <?php
 /**
  * @brief licenseBootstrap, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
 
 class libLicenseBootstrap
 {
-
-    public static function modules($core, $modules, $type, $title)
+    public static function modules($modules, $type, $title)
     {
         $type = $type == 'themes' ? 'themes' : 'plugins';
 
-        echo 
+        echo
         '<div class="multi-part" ' .
         'id="packman-' . $type . '" title="' . $title . '">' .
         '<h3>' . $title . '</h3>';
 
         if (empty($modules) && !is_array($modules)) {
-            echo 
+            echo
             '<p><strong>' . __('There are no modules.') . '</strong></p>' .
             '<div>';
 
@@ -38,19 +36,19 @@ class libLicenseBootstrap
         echo
         '<form action="plugin.php" method="post">' .
         '<table class="clear"><tr>' .
-        '<th class="nowrap">' . __('Id') .'</th>' .
+        '<th class="nowrap">' . __('Id') . '</th>' .
         '<th class="nowrap">' . __('Version') . '</th>' .
         '<th class="nowrap maximal">' . __('Name') . '</th>' .
         '<th class="nowrap">' . __('Root') . '</th>' .
         '</tr>';
 
-        foreach (self::sort($modules) as $id => $module) {  
+        foreach (self::sort($modules) as $id => $module) {
             echo
             '<tr class="line">' .
             '<td class="nowrap"><label class="classic">' .
-                form::checkbox(array('modules[' . html::escapeHTML($id) . ']'), 1) .
+                form::checkbox(['modules[' . html::escapeHTML($id) . ']'], 1) .
                 html::escapeHTML($id) .
-            '</label></td>'.
+            '</label></td>' .
             '<td class="nowrap count">' .
                 html::escapeHTML($module['version']) .
             '</td>' .
@@ -67,18 +65,19 @@ class libLicenseBootstrap
         '</table>' .
         '<p class="checkboxes-helpers"></p>' .
         '<p>' .
-        (!empty($_REQUEST['redir']) ?
+        (
+            !empty($_REQUEST['redir']) ?
             form::hidden(
-                array('redir'),
+                ['redir'],
                 html::escapeHTML($_REQUEST['redir'])
             ) : ''
-        ).
-        form::hidden(array('p'), 'licenseBootstrap') .
-        form::hidden(array('type'), $type) .
-        form::hidden(array('action'),'addlicense') .
+        ) .
+        form::hidden(['p'], 'licenseBootstrap') .
+        form::hidden(['type'], $type) .
+        form::hidden(['action'], 'addlicense') .
         '<input type="submit" name="addlicense" value="' .
          __('Add license to selected modules') . '" />' .
-        $core->formNonce() . '</p>' .
+        dcCore::app()->formNonce() . '</p>' .
         '</form>' .
 
         '</div>';
@@ -86,8 +85,8 @@ class libLicenseBootstrap
 
     protected static function sort($modules)
     {
-        $sorter = array();
-        foreach($modules as $id => $module) {
+        $sorter = [];
+        foreach ($modules as $id => $module) {
             $sorter[$id] = $id;
         }
         array_multisort($sorter, SORT_ASC, $modules);

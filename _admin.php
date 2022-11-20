@@ -1,31 +1,30 @@
 <?php
 /**
  * @brief licenseBootstrap, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
 
-$core->blog->settings->addNamespace('licenseBootstrap');
+dcCore::app()->blog->settings->addNamespace('licenseBootstrap');
 
-$core->addBehavior('adminDashboardFavorites', [
-    'licenseBootstrapBehaviors', 'adminDashboardFavorites'
+dcCore::app()->addBehavior('adminDashboardFavoritesV2', [
+    'licenseBootstrapBehaviors', 'adminDashboardFavorites',
 ]);
 
-$core->addBehavior('packmanBeforeCreatePackage', [
-    'licenseBootstrapBehaviors', 'packmanBeforeCreatePackage'
+dcCore::app()->addBehavior('packmanBeforeCreatePackage', [
+    'licenseBootstrapBehaviors', 'packmanBeforeCreatePackage',
 ]);
 
-$_menu['Plugins']->addItem(
+dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
     __('License bootstrap'),
     'plugin.php?p=licenseBootstrap',
     'index.php?pf=licenseBootstrap/icon.png',
@@ -33,35 +32,35 @@ $_menu['Plugins']->addItem(
         '/plugin.php\?p=licenseBootstrap(&.*)?$/',
         $_SERVER['REQUEST_URI']
     ),
-    $core->auth->isSuperAdmin()
+    dcCore::app()->auth->isSuperAdmin()
 );
 
 class licenseBootstrapBehaviors
 {
-    public static function adminDashboardFavorites($core, $favs)
+    public static function adminDashboardFavorites($favs)
     {
-        $favs->register('licenseBootstrap', array(
-            'title'     => __('License bootstrap'),
-            'url'       => 'plugin.php?p=licenseBootstrap',
-            'small-icon'    => 'index.php?pf=licenseBootstrap/icon.png',
-            'large-icon'    => 'index.php?pf=licenseBootstrap/icon-big.png',
-            'permissions'   => $core->auth->isSuperAdmin(),
-            'active_cb' => array(
-                'licenseBootstrapBehaviors', 
-                'adminDashboardFavoritesActive'
-            )
-        ));
+        $favs->register('licenseBootstrap', [
+            'title'       => __('License bootstrap'),
+            'url'         => 'plugin.php?p=licenseBootstrap',
+            'small-icon'  => 'index.php?pf=licenseBootstrap/icon.png',
+            'large-icon'  => 'index.php?pf=licenseBootstrap/icon-big.png',
+            'permissions' => dcCore::app()->auth->isSuperAdmin(),
+            'active_cb'   => [
+                'licenseBootstrapBehaviors',
+                'adminDashboardFavoritesActive',
+            ],
+        ]);
     }
 
     public static function adminDashboardFavoritesActive($request, $params)
     {
-        return $request == 'plugin.php' 
-            && isset($params['p']) 
+        return $request == 'plugin.php'
+            && isset($params['p'])
             && $params['p'] == 'licenseBootstrap';
     }
 
-    public static function packmanBeforeCreatePackage($core, $module)
+    public static function packmanBeforeCreatePackage($module)
     {
-        licenseBootstrap::addLicense($core, $module);
+        licenseBootstrap::addLicense($module);
     }
 }
