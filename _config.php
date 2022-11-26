@@ -112,9 +112,4 @@ foreach (licenseBootstrap::getLicenses() as $name) {
 }
 
 echo '
-</div>
-
-<div class="fieldset">
-<h4>' . __('Files') . '</h4>
-
 </div>';
