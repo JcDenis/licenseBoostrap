@@ -27,7 +27,7 @@ dcCore::app()->addBehavior('packmanBeforeCreatePackage', [
 dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
     __('License bootstrap'),
     'plugin.php?p=licenseBootstrap',
-    'index.php?pf=licenseBootstrap/icon.png',
+    'index.php?pf=licenseBootstrap/icon.svg',
     preg_match(
         '/plugin.php\?p=licenseBootstrap(&.*)?$/',
         $_SERVER['REQUEST_URI']
@@ -42,8 +42,8 @@ class licenseBootstrapBehaviors
         $favs->register('licenseBootstrap', [
             'title'       => __('License bootstrap'),
             'url'         => 'plugin.php?p=licenseBootstrap',
-            'small-icon'  => 'index.php?pf=licenseBootstrap/icon.png',
-            'large-icon'  => 'index.php?pf=licenseBootstrap/icon-big.png',
+            'small-icon'  => 'index.php?pf=licenseBootstrap/icon.svg',
+            'large-icon'  => 'index.php?pf=licenseBootstrap/icon.svg',
             'permissions' => dcCore::app()->auth->isSuperAdmin(),
             'active_cb'   => [
                 'licenseBootstrapBehaviors',
