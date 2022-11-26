@@ -16,51 +16,24 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 
 dcCore::app()->blog->settings->addNamespace('licenseBootstrap');
 
-dcCore::app()->addBehavior('adminDashboardFavoritesV2', [
-    'licenseBootstrapBehaviors', 'adminDashboardFavorites',
-]);
+dcCore::app()->addBehavior('adminDashboardFavoritesV2', function ($favs) {
+    $favs->register('licenseBootstrap', [
+        'title'       => __('License bootstrap'),
+        'url'         => dcCore::app()->adminurl->get('admin.plugin.licenseBootstrap'),
+        'small-icon'  => urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
+        'large-icon'  => urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
+        'permissions' => dcCore::app()->auth->isSuperAdmin(),
+    ]);
+});
 
-dcCore::app()->addBehavior('packmanBeforeCreatePackage', [
-    'licenseBootstrapBehaviors', 'packmanBeforeCreatePackage',
-]);
+dcCore::app()->addBehavior('packmanBeforeCreatePackage', function ($module) {
+    licenseBootstrap::addLicense($module);
+});
 
 dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
     __('License bootstrap'),
-    'plugin.php?p=licenseBootstrap',
-    'index.php?pf=licenseBootstrap/icon.svg',
-    preg_match(
-        '/plugin.php\?p=licenseBootstrap(&.*)?$/',
-        $_SERVER['REQUEST_URI']
-    ),
+    dcCore::app()->adminurl->get('admin.plugin.licenseBootstrap'),
+    urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
+    preg_match('/' . preg_quote(dcCore::app()->adminurl->get('admin.plugin.licenseBootstrap')) . '(&.*)?$/', $_SERVER['REQUEST_URI']),
     dcCore::app()->auth->isSuperAdmin()
 );
-
-class licenseBootstrapBehaviors
-{
-    public static function adminDashboardFavorites($favs)
-    {
-        $favs->register('licenseBootstrap', [
-            'title'       => __('License bootstrap'),
-            'url'         => 'plugin.php?p=licenseBootstrap',
-            'small-icon'  => 'index.php?pf=licenseBootstrap/icon.svg',
-            'large-icon'  => 'index.php?pf=licenseBootstrap/icon.svg',
-            'permissions' => dcCore::app()->auth->isSuperAdmin(),
-            'active_cb'   => [
-                'licenseBootstrapBehaviors',
-                'adminDashboardFavoritesActive',
-            ],
-        ]);
-    }
-
-    public static function adminDashboardFavoritesActive($request, $params)
-    {
-        return $request == 'plugin.php'
-            && isset($params['p'])
-            && $params['p'] == 'licenseBootstrap';
-    }
-
-    public static function packmanBeforeCreatePackage($module)
-    {
-        licenseBootstrap::addLicense($module);
-    }
-}
