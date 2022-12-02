@@ -14,5 +14,7 @@ if (!defined('DC_RC_PATH')) {
     return null;
 }
 
-Clearbricks::lib()->autoload(['licenseBootstrap' => __DIR__ . '/inc/class.license.bootstrap.php']);
-Clearbricks::lib()->autoload(['libLicenseBootstrap' => __DIR__ . '/inc/lib.license.bootstrap.php']);
+Clearbricks::lib()->autoload([
+    'licenseBootstrap' => __DIR__ . '/inc/class.license.bootstrap.php',
+    'libLicenseBootstrap' => __DIR__ . '/inc/lib.license.bootstrap.php',
+]);
