@@ -22,7 +22,7 @@ dcCore::app()->addBehavior('adminDashboardFavoritesV2', function ($favs) {
         'url'         => dcCore::app()->adminurl->get('admin.plugin.licenseBootstrap'),
         'small-icon'  => urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
         'large-icon'  => urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
-        'permissions' => dcCore::app()->auth->isSuperAdmin(),
+        //'permissions' => dcCore::app()->auth->isSuperAdmin(),
     ]);
 });
 
