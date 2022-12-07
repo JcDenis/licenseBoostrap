@@ -18,10 +18,10 @@ dcCore::app()->blog->settings->addNamespace('licenseBootstrap');
 
 dcCore::app()->addBehavior('adminDashboardFavoritesV2', function ($favs) {
     $favs->register('licenseBootstrap', [
-        'title'       => __('License bootstrap'),
-        'url'         => dcCore::app()->adminurl->get('admin.plugin.licenseBootstrap'),
-        'small-icon'  => urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
-        'large-icon'  => urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
+        'title'      => __('License bootstrap'),
+        'url'        => dcCore::app()->adminurl->get('admin.plugin.licenseBootstrap'),
+        'small-icon' => urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
+        'large-icon' => urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
         //'permissions' => dcCore::app()->auth->isSuperAdmin(),
     ]);
 });
