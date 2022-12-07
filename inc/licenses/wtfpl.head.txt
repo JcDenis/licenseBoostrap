@@ -1,0 +1,8 @@
+This file is part of %module_id%, a %module_type% for Dotclear 2.
+
+Copyright (c) %year% %user_cn% and contributors
+%user_email%
+
+This work is free. You can redistribute it and/or modify it under the
+terms of the Do What The Fuck You Want To Public License, Version 2,
+as published by Sam Hocevar. See http://www.wtfpl.net/ for more details.
