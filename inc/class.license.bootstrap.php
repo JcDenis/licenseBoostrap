@@ -36,22 +36,22 @@ class licenseBootstrap
             $module
         );
 
-        if ($s->write_full) {
+        if ($s->get('write_full')) {
             licenseBootstrap::writeFullContent(
-                $s->license_name,
+                $s->get('license_name'),
                 $module,
-                $s->overwrite
+                $s->get('overwrite')
             );
         }
         licenseBootstrap::writeHeadContent(
-            $s->license_name,
-            licenseBootstrap::decode($s->license_head),
+            $s->get('license_name'),
+            licenseBootstrap::decode($s->get('license_head')),
             $module,
             dcCore::app()->auth,
-            $s->overwrite,
-            $s->write_php,
-            $s->write_js,
-            $s->exclude_locales
+            $s->get('overwrite'),
+            $s->get('write_php'),
+            $s->get('write_js'),
+            $s->get('exclude_locales')
         );
 
         # --BEHAVIOR-- licenseBootstrapAfterAddLicense
@@ -288,10 +288,10 @@ class licenseBootstrap
     /**
      * Replace info in license
      *
-     * @param  string $content License content
-     * @param  array $module   Module info
-     * @param  array $user     User info
-     * @return string          License content
+     * @param   string  $content    License content
+     * @param   array   $module     Module info
+     * @param   object  $user       User info
+     * @return  string              License content
      */
     protected static function replaceInfo($content, $module, $user)
     {

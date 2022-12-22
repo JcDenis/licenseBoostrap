@@ -15,18 +15,18 @@ if (!defined('DC_CONTEXT_MODULE')) {
 }
 
 $redir = empty($_REQUEST['redir']) ?
-    dcCore::app()->admin->list->getURL() . '#plugins' : $_REQUEST['redir'];
+    dcCore::app()->admin->__get('list')->getURL() . '#plugins' : $_REQUEST['redir'];
 
 # -- Get settings --
 $s = dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
 
-$lb_overwrite       = (bool) $s->overwrite;
-$lb_write_full      = (bool) $s->write_full;
-$lb_write_php       = (bool) $s->write_php;
-$lb_write_js        = (bool) $s->write_js;
-$lb_exclude_locales = (bool) $s->exclude_locales;
-$lb_license_name    = licenseBootstrap::getName($s->license_name);
-$lb_license_head    = licenseBootstrap::gethead($s->license_name, licenseBootstrap::decode($s->license_head));
+$lb_overwrite       = (bool) $s->get('overwrite');
+$lb_write_full      = (bool) $s->get('write_full');
+$lb_write_php       = (bool) $s->get('write_php');
+$lb_write_js        = (bool) $s->get('write_js');
+$lb_exclude_locales = (bool) $s->get('exclude_locales');
+$lb_license_name    = licenseBootstrap::getName($s->get('license_name'));
+$lb_license_head    = licenseBootstrap::gethead($s->get('license_name'), licenseBootstrap::decode($s->get('license_head')));
 
 # -- Set settings --
 if (!empty($_POST['save'])) {
@@ -51,8 +51,8 @@ if (!empty($_POST['save'])) {
             __('Configuration has been successfully updated.')
         );
         http::redirect(
-            dcCore::app()->admin->list->getURL('module=' . basename(__DIR__) . '&conf=1&redir=' .
-            dcCore::app()->admin->list->getRedir())
+            dcCore::app()->admin->__get('list')->getURL('module=' . basename(__DIR__) . '&conf=1&redir=' .
+            dcCore::app()->admin->__get('list')->getRedir())
         );
     } catch (Exception $e) {
         dcCore::app()->error->add($e->getMessage());

@@ -24,7 +24,7 @@ $type   = isset($_POST['type']) && in_array($_POST['type'], ['plugins', 'themes'
 $s = dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
 
 # Modules
-if (!isset(dcCore::app()->themes)) {
+if (!(dcCore::app()->themes instanceof dcThemes)) {
     dcCore::app()->themes = new dcThemes();
     dcCore::app()->themes->loadModules(dcCore::app()->blog->themes_path, null);
 }
