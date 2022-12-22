@@ -80,6 +80,26 @@ try {
         return null;
     }
 
+    // version < 2022.12.22 : upgrade settings ns and array
+    $current = dcCore::app()->getVersion(basename(__DIR__));
+    if ($current && version_compare($current, '2022.12.22', '<')) {
+        $record = dcCore::app()->con->select(
+            'SELECT * FROM ' . dcCore::app()->prefix . dcNamespace::NS_TABLE_NAME . ' ' .
+            "WHERE setting_ns = 'licenseBootstrap' "
+        );
+        $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . dcNamespace::NS_TABLE_NAME);
+        while ($record->fetch()) {
+            if (in_array($record->setting_id, ['license_head'])) {
+                $cur->setting_value = (string) unserialize(base64_decode($record->setting_value));
+            }
+            $cur->setting_ns = basename(__DIR__);
+            $cur->update(
+                "WHERE setting_id = '" . $record->setting_id . "' and setting_ns = 'licenseBootstrap' " .
+                'AND blog_id ' . (null === $record->blog_id ? 'IS NULL ' : ("= '" . dcCore::app()->con->escape($record->blog_id) . "' "))
+            );
+            $cur->clean();
+        }
+    }
     # Set module settings
     dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
     foreach ($mod_conf as $v) {

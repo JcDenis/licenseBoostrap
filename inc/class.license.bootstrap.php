@@ -364,11 +364,11 @@ class licenseBootstrap
 
     public static function encode($a)
     {
-        return base64_encode(serialize($a));
+        return json_encode($a);
     }
 
     public static function decode($a)
     {
-        return unserialize(base64_decode($a));
+        return json_decode($a, true);
     }
 }
