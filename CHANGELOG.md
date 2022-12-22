@@ -1,3 +1,14 @@
+2022.12.22
+- add wtfpl license
+- use SVG icon
+- use anonymous function
+- use abstract plugin id
+- change serialize stuff into json stuff
+- fix pacKman behavoir dis|enable
+- fix autoload
+- fix permissions
+- fix install
+
 2022.11.20
 - fix compatibility with Dotclear 2.24 (required)
 
