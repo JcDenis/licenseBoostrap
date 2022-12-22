@@ -18,8 +18,7 @@ $redir = empty($_REQUEST['redir']) ?
     dcCore::app()->admin->list->getURL() . '#plugins' : $_REQUEST['redir'];
 
 # -- Get settings --
-dcCore::app()->blog->settings->addNamespace('licenseBootstrap');
-$s = dcCore::app()->blog->settings->licenseBootstrap;
+$s = dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
 
 $lb_overwrite       = (bool) $s->overwrite;
 $lb_write_full      = (bool) $s->write_full;
@@ -52,7 +51,7 @@ if (!empty($_POST['save'])) {
             __('Configuration has been successfully updated.')
         );
         http::redirect(
-            dcCore::app()->admin->list->getURL('module=licenseBootstrap&conf=1&redir=' .
+            dcCore::app()->admin->list->getURL('module=' . basename(__DIR__) . '&conf=1&redir=' .
             dcCore::app()->admin->list->getRedir())
         );
     } catch (Exception $e) {

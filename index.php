@@ -17,13 +17,11 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 dcPage::checkSuper();
 
 # Queries
-$p_url  = 'plugin.php?p=licenseBootstrap';
 $action = $_POST['action'] ?? '';
 $type   = isset($_POST['type']) && in_array($_POST['type'], ['plugins', 'themes']) ? $_POST['type'] : '';
 
 # Settings
-dcCore::app()->blog->settings->addNamespace('licenseBootstrap');
-$s = dcCore::app()->blog->settings->licenseBootstrap;
+$s = dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
 
 # Modules
 if (!isset(dcCore::app()->themes)) {
@@ -72,7 +70,7 @@ try {
 echo
 '<html><head><title>' . __('License bootstrap') . '</title>' .
 dcPage::jsPageTabs() .
-dcPage::jsLoad('index.php?pf=licenseBootstrap/js/licensebootstrap.js') .
+dcPage::jsModuleLoad(basename(__DIR__) . '/js/licensebootstrap.js') .
 
 # --BEHAVIOR-- licenseBootstrapAdminHeader
 dcCore::app()->callBehavior('licenseBootstrapAdminHeader') .

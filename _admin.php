@@ -14,14 +14,14 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
 
-dcCore::app()->blog->settings->addNamespace('licenseBootstrap');
+dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
 
 dcCore::app()->addBehavior('adminDashboardFavoritesV2', function ($favs) {
-    $favs->register('licenseBootstrap', [
+    $favs->register(basename(__DIR__), [
         'title'      => __('License bootstrap'),
-        'url'        => dcCore::app()->adminurl->get('admin.plugin.licenseBootstrap'),
-        'small-icon' => urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
-        'large-icon' => urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
+        'url'        => dcCore::app()->adminurl->get('admin.plugin.' . basename(__DIR__)),
+        'small-icon' => urldecode(dcPage::getPF(basename(__DIR__) . '/icon.svg')),
+        'large-icon' => urldecode(dcPage::getPF(basename(__DIR__) . '/icon.svg')),
         //'permissions' => dcCore::app()->auth->isSuperAdmin(),
     ]);
 });
@@ -32,8 +32,8 @@ dcCore::app()->addBehavior('packmanBeforeCreatePackage', function ($module) {
 
 dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
     __('License bootstrap'),
-    dcCore::app()->adminurl->get('admin.plugin.licenseBootstrap'),
-    urldecode(dcPage::getPF('licenseBootstrap/icon.svg')),
-    preg_match('/' . preg_quote(dcCore::app()->adminurl->get('admin.plugin.licenseBootstrap')) . '(&.*)?$/', $_SERVER['REQUEST_URI']),
+    dcCore::app()->adminurl->get('admin.plugin.' . basename(__DIR__)),
+    urldecode(dcPage::getPF(basename(__DIR__) . '/icon.svg')),
+    preg_match('/' . preg_quote(dcCore::app()->adminurl->get('admin.plugin.' . basename(__DIR__))) . '(&.*)?$/', $_SERVER['REQUEST_URI']),
     dcCore::app()->auth->isSuperAdmin()
 );

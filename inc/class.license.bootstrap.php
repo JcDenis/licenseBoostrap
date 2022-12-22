@@ -28,7 +28,7 @@ class licenseBootstrap
      */
     public static function addLicense($module)
     {
-        $s = dcCore::app()->blog->settings->licenseBootstrap;
+        $s = dcCore::app()->blog->settings->get(basename(__DIR__));
 
         # --BEHAVIOR-- licenseBootstrapBeforeAddLicense
         dcCore::app()->callBehavior(
