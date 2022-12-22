@@ -27,7 +27,9 @@ dcCore::app()->addBehavior('adminDashboardFavoritesV2', function ($favs) {
 });
 
 dcCore::app()->addBehavior('packmanBeforeCreatePackage', function ($module) {
-    licenseBootstrap::addLicense($module);
+    if (dcCore::app()->blog->settings->get(basename(__DIR__))->get('behavior_packman')) {
+        licenseBootstrap::addLicense($module);
+    }
 });
 
 dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
