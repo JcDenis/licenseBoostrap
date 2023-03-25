@@ -10,105 +10,140 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_CONTEXT_MODULE')) {
-    return null;
-}
+declare(strict_types=1);
 
-$redir = empty($_REQUEST['redir']) ?
-    dcCore::app()->admin->__get('list')->getURL() . '#plugins' : $_REQUEST['redir'];
+namespace Dotclear\Plugin\licenseBootstrap;
 
-# -- Get settings --
-$s = dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
+use dcCore;
+use dcPage;
+use dcNsProcess;
+use Dotclear\Helper\Html\Form\{
+    Checkbox,
+    Div,
+    Fieldset,
+    Label,
+    Legend,
+    Para,
+    Radio,
+    Textarea
+};
+use Exception;
 
-$lb_overwrite       = (bool) $s->get('overwrite');
-$lb_write_full      = (bool) $s->get('write_full');
-$lb_write_php       = (bool) $s->get('write_php');
-$lb_write_js        = (bool) $s->get('write_js');
-$lb_exclude_locales = (bool) $s->get('exclude_locales');
-$lb_license_name    = licenseBootstrap::getName($s->get('license_name'));
-$lb_license_head    = licenseBootstrap::gethead($s->get('license_name'), licenseBootstrap::decode($s->get('license_head')));
+class Config extends dcNsProcess
+{
+    public static function init(): bool
+    {
+        static::$init == defined('DC_CONTEXT_ADMIN')
+            && dcCore::app()->auth?->isSuperAdmin()
+            && My::phpCompliant();
 
-# -- Set settings --
-if (!empty($_POST['save'])) {
-    try {
-        $lb_overwrite       = !empty($_POST['lb_overwrite']);
-        $lb_write_full      = !empty($_POST['lb_write_full']);
-        $lb_write_php       = !empty($_POST['lb_write_php']);
-        $lb_write_js        = !empty($_POST['lb_write_js']);
-        $lb_exclude_locales = !empty($_POST['lb_exclude_locales']);
-        $lb_license_name    = $_POST['lb_license_name'];
-        $lb_license_head    = licenseBootstrap::gethead($lb_license_name, !empty($_POST['lb_license_head_' . $lb_license_name]) ? $_POST['lb_license_head_' . $lb_license_name] : '');
+        return static::$init;
+    }
 
-        $s->put('overwrite', $lb_overwrite);
-        $s->put('write_full', $lb_write_full);
-        $s->put('write_php', $lb_write_php);
-        $s->put('write_js', $lb_write_js);
-        $s->put('exclude_locales', $lb_exclude_locales);
-        $s->put('license_name', licenseBootstrap::getName($lb_license_name));
-        $s->put('license_head', licenseBootstrap::encode($lb_license_head));
+    public static function process(): bool
+    {
+        if (!static::$init) {
+            return false;
+        }
 
-        dcPage::addSuccessNotice(
-            __('Configuration has been successfully updated.')
-        );
-        http::redirect(
-            dcCore::app()->admin->__get('list')->getURL('module=' . basename(__DIR__) . '&conf=1&redir=' .
-            dcCore::app()->admin->__get('list')->getRedir())
-        );
-    } catch (Exception $e) {
-        dcCore::app()->error->add($e->getMessage());
+        if (empty($_POST['save'])) {
+            return true;
+        }
+
+        $s = Settings::init();
+
+        # -- Set settings --
+        try {
+            $license_name = $_POST['lb_license_name'];
+            $license_head = Utils::gethead(
+                $license_name,
+                !empty($_POST['lb_license_head_' . $license_name]) ? $_POST['lb_license_head_' . $license_name] : ''
+            );
+
+            $s->writeSetting('hide_distrib', !empty($_POST['lb_hide_distrib']));
+            $s->writeSetting('overwrite', !empty($_POST['lb_overwrite']));
+            $s->writeSetting('write_full', !empty($_POST['lb_write_full']));
+            $s->writeSetting('write_php', !empty($_POST['lb_write_php']));
+            $s->writeSetting('write_js', !empty($_POST['lb_write_js']));
+            $s->writeSetting('exclude_locales', !empty($_POST['lb_exclude_locales']));
+            $s->writeSetting('license_name', Utils::getName($license_name));
+            $s->writeSetting('license_head', Utils::encode($license_head));
+
+            dcPage::addSuccessNotice(
+                __('Configuration has been successfully updated.')
+            );
+            dcCore::app()->adminurl?->redirect('admin.plugins', [
+                'module' => My::id(),
+                'conf'   => '1',
+                'redir'  => dcCore::app()->admin->__get('list')->getRedir(),
+            ]);
+        } catch (Exception $e) {
+            dcCore::app()->error->add($e->getMessage());
+        }
+
+        return true;
+    }
+
+    public static function render(): void
+    {
+        if (!static::$init) {
+            return;
+        }
+
+        $s = Settings::init();
+
+        $licences = [];
+        foreach (Utils::getLicenses() as $name) {
+            $check = false;
+            $head  = Utils::getHead($name);
+            if ($name == Utils::getName($s->license_name)) {
+                $check = true;
+                $head  = Utils::getHead($name, Utils::getHead($s->license_name, Utils::decode($s->license_head)));
+            }
+            $licences[] = (new Para())->items([
+                (new Radio(['lb_license_name', 'license_' . $name], $check))->value($name),
+                (new Label(sprintf(__('License %s:'), $name), Label::OUTSIDE_LABEL_AFTER))->for('license_' . $name)->class('classic'),
+            ]);
+            $licences[] = (new Para())->items([
+                (new Textarea('lb_license_head_' . $name, $head))->class('maximal')->cols(50)->rows(10),
+            ]);
+        }
+
+        echo
+        (new Div())->items([
+            (new Fieldset())->class('fieldset')->legend((new Legend(__('Files'))))->fields([
+                // hide_distrib
+                (new Para())->items([
+                    (new Checkbox('lb_hide_distrib', $s->hide_distrib))->value(1),
+                    (new Label(__('Hide distributed modules from lists'), Label::OUTSIDE_LABEL_AFTER))->for('lb_hide_distrib')->class('classic'),
+                ]),
+                // overwrite
+                (new Para())->items([
+                    (new Checkbox('lb_overwrite', $s->overwrite))->value(1),
+                    (new Label(__('Overwrite existing licenses'), Label::OUTSIDE_LABEL_AFTER))->for('lb_overwrite')->class('classic'),
+                ]),
+                // write_full
+                (new Para())->items([
+                    (new Checkbox('lb_write_full', $s->write_full))->value(1),
+                    (new Label(__('Add full LICENSE file to module root'), Label::OUTSIDE_LABEL_AFTER))->for('lb_write_full')->class('classic'),
+                ]),
+                // write_php
+                (new Para())->items([
+                    (new Checkbox('lb_write_php', $s->write_php))->value(1),
+                    (new Label(__('Add license block to PHP files'), Label::OUTSIDE_LABEL_AFTER))->for('lb_write_php')->class('classic'),
+                ]),
+                // write_js
+                (new Para())->items([
+                    (new Checkbox('lb_write_js', $s->write_js))->value(1),
+                    (new Label(__('Add license block to JS files'), Label::OUTSIDE_LABEL_AFTER))->for('lb_write_js')->class('classic'),
+                ]),
+                // exclude_locales
+                (new Para())->items([
+                    (new Checkbox('lb_exclude_locales', $s->exclude_locales))->value(1),
+                    (new Label(__('Do not add license block to files from locales folder'), Label::OUTSIDE_LABEL_AFTER))->for('lb_exclude_locales')->class('classic'),
+                ]),
+            ]),
+            (new Fieldset())->class('fieldset')->legend((new Legend(__('Licenses'))))->fields($licences),
+        ])->render();
     }
 }
-
-# -- Display form --
-echo '
-<div class="fieldset">
-<h4>' . __('Files') . '</h4>
-
-<p><label class="classic" for="lb_overwrite">' .
-form::checkbox('lb_overwrite', 1, $lb_overwrite) . ' ' .
-__('Overwrite existing licenses') .
-'</label></p>
-
-<p><label class="classic" for="lb_write_full">' .
-form::checkbox('lb_write_full', 1, $lb_write_full) . ' ' .
-__('Add full LICENSE file to module root') .
-'</label></p>
-
-<p><label class="classic" for="lb_write_php">' .
-form::checkbox('lb_write_php', 1, $lb_write_php) . ' ' .
-__('Add license block to PHP files') .
-'</label></p>
-
-<p><label class="classic" for="lb_write_js">' .
-form::checkbox('lb_write_js', 1, $lb_write_js) . ' ' .
-__('Add license block to JS files') .
-'</label></p>
-
-<p><label class="classic" for="lb_exclude_locales">' .
-form::checkbox('lb_exclude_locales', 1, $lb_exclude_locales) . ' ' .
-__('Do not add license block to files from locales folder') .
-'</label></p>
-
-</div>
-
-<div class="fieldset">
-<h4>' . __('Licenses') . '</h4>';
-
-foreach (licenseBootstrap::getLicenses() as $name) {
-    $check = false;
-    $head  = licenseBootstrap::getHead($name);
-    if ($name == $lb_license_name) {
-        $check = true;
-        $head  = licenseBootstrap::getHead($name, $lb_license_head);
-    }
-    echo '
-    <p><label class="classic" for="license_' . $name . '">' .
-    form::radio(['lb_license_name', 'license_' . $name], $name, $check) . ' ' .
-    sprintf(__('License %s:'), $name) . '</label></p>
-    <p class="area">' .
-    form::textarea('lb_license_head_' . $name, 50, 10, html::escapeHTML($head)) . '
-    </p>';
-}
-
-echo '
-</div>';

@@ -10,32 +10,58 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_CONTEXT_ADMIN')) {
-    return null;
-}
+declare(strict_types=1);
 
-dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
+namespace Dotclear\Plugin\licenseBootstrap;
 
-dcCore::app()->addBehavior('adminDashboardFavoritesV2', function ($favs) {
-    $favs->register(basename(__DIR__), [
-        'title'      => __('License bootstrap'),
-        'url'        => dcCore::app()->adminurl->get('admin.plugin.' . basename(__DIR__)),
-        'small-icon' => urldecode(dcPage::getPF(basename(__DIR__) . '/icon.svg')),
-        'large-icon' => urldecode(dcPage::getPF(basename(__DIR__) . '/icon.svg')),
-        //'permissions' => dcCore::app()->auth->isSuperAdmin(),
-    ]);
-});
+use dcAdmin;
+use dcCore;
+use dcFavorites;
+use dcNsProcess;
+use dcPage;
 
-dcCore::app()->addBehavior('packmanBeforeCreatePackage', function ($module) {
-    if (dcCore::app()->blog->settings->get(basename(__DIR__))->get('behavior_packman')) {
-        licenseBootstrap::addLicense($module);
+class Backend extends dcNsProcess
+{
+    public static function init(): bool
+    {
+        static::$init = defined('DC_CONTEXT_ADMIN')
+            && dcCore::app()->auth?->isSuperAdmin()
+            && My::phpCompliant();
+
+        return static::$init;
     }
-});
 
-dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
-    __('License bootstrap'),
-    dcCore::app()->adminurl->get('admin.plugin.' . basename(__DIR__)),
-    urldecode(dcPage::getPF(basename(__DIR__) . '/icon.svg')),
-    preg_match('/' . preg_quote(dcCore::app()->adminurl->get('admin.plugin.' . basename(__DIR__))) . '(&.*)?$/', $_SERVER['REQUEST_URI']),
-    dcCore::app()->auth->isSuperAdmin()
-);
+    public static function process(): bool
+    {
+        if (!static::$init) {
+            return false;
+        }
+
+        dcCore::app()->addBehaviors([
+            'adminDashboardFavoritesV2' => function (dcFavorites $favs): void {
+                $favs->register(My::id(), [
+                    'title'      => My::name(),
+                    'url'        => dcCore::app()->adminurl->get('admin.plugin.' . My::id()),
+                    'small-icon' => dcPage::getPF(My::id() . '/icon.svg'),
+                    'large-icon' => dcPage::getPF(My::id() . '/icon.svg'),
+                    //'permissions' => dcCore::app()->auth->isSuperAdmin(),
+                ]);
+            },
+            'packmanBeforeCreatePackage' => function ($module) {
+                if (Settings::init()->behavior_packman) {
+                    Utils::addLicense($module);
+                }
+            },
+        ]);
+
+        dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
+            My::name(),
+            dcCore::app()->adminurl->get('admin.plugin.' . My::id()),
+            dcPage::getPF(My::id() . '/icon.svg'),
+            preg_match('/' . preg_quote(dcCore::app()->adminurl->get('admin.plugin.' . My::id())) . '(&.*)?$/', $_SERVER['REQUEST_URI']),
+            dcCore::app()->auth?->isSuperAdmin()
+        );
+
+        return true;
+    }
+}

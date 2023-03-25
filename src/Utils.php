@@ -10,13 +10,19 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_CONTEXT_ADMIN')) {
-    return null;
-}
+declare(strict_types=1);
 
-class licenseBootstrap
+namespace Dotclear\Plugin\licenseBootstrap;
+
+use dcAuth;
+use dcCore;
+use Dotclear\Helper\File\Files;
+use Dotclear\Helper\File\Path;
+use Exception;
+
+class Utils
 {
-    protected static $licenses = [];
+    protected static array $licenses = [];
 
     /**
      * Add license to a module.
@@ -26,9 +32,9 @@ class licenseBootstrap
      *
      * @param array  $module Module info
      */
-    public static function addLicense($module)
+    public static function addLicense(array $module): void
     {
-        $s = dcCore::app()->blog->settings->get(basename(__DIR__));
+        $s = Settings::init();
 
         # --BEHAVIOR-- licenseBootstrapBeforeAddLicense
         dcCore::app()->callBehavior(
@@ -36,22 +42,22 @@ class licenseBootstrap
             $module
         );
 
-        if ($s->get('write_full')) {
-            licenseBootstrap::writeFullContent(
-                $s->get('license_name'),
+        if ($s->write_full) {
+            self::writeFullContent(
+                $s->license_name,
                 $module,
-                $s->get('overwrite')
+                $s->overwrite
             );
         }
-        licenseBootstrap::writeHeadContent(
-            $s->get('license_name'),
-            licenseBootstrap::decode($s->get('license_head')),
+        self::writeHeadContent(
+            $s->license_name,
+            self::decode($s->license_head),
             $module,
             dcCore::app()->auth,
-            $s->get('overwrite'),
-            $s->get('write_php'),
-            $s->get('write_js'),
-            $s->get('exclude_locales')
+            $s->overwrite,
+            $s->write_php,
+            $s->write_js,
+            $s->exclude_locales
         );
 
         # --BEHAVIOR-- licenseBootstrapAfterAddLicense
@@ -66,20 +72,20 @@ class licenseBootstrap
      *
      * @return array List of licenses names
      */
-    public static function getLicenses()
+    public static function getLicenses(): array
     {
-        if (empty(licenseBootstrap::$licenses)) {
+        if (empty(self::$licenses)) {
             $file_reg = '/^([a-z0-9]+)\.head\.txt$/';
             $res      = [];
-            foreach (files::scandir(dirname(__FILE__) . '/licenses/') as $file) {
+            foreach (Files::scandir(__DIR__ . DIRECTORY_SEPARATOR . My::TEMPLATE_FOLDER . DIRECTORY_SEPARATOR) as $file) {
                 if (preg_match($file_reg, $file, $matches)) {
                     $res[] = $matches[1];
                 }
             }
-            licenseBootstrap::$licenses = $res;
+            self::$licenses = $res;
         }
 
-        return licenseBootstrap::$licenses;
+        return self::$licenses;
     }
 
     /**
@@ -90,7 +96,7 @@ class licenseBootstrap
      * @param  string $name License name
      * @return string       License name
      */
-    public static function getName($name = 'gpl2')
+    public static function getName(string $name = 'gpl2'): string
     {
         return in_array($name, self::getLicenses()) ? $name : 'gpl2';
     }
@@ -102,7 +108,7 @@ class licenseBootstrap
      * @param  string $content Header content
      * @return string          Header content
      */
-    public static function getHead($name = 'gpl2', $content = '')
+    public static function getHead(string $name = 'gpl2', string $content = ''): string
     {
         if (!in_array($name, self::getLicenses())) {
             $name    = 'gpl2';
@@ -119,7 +125,7 @@ class licenseBootstrap
      * @param  string $name License name
      * @return string       Full license content
      */
-    public static function getFull($name = 'gpl2')
+    public static function getFull(string $name = 'gpl2'): string
     {
         return self::getContent($name, 'full');
     }
@@ -131,7 +137,7 @@ class licenseBootstrap
      * @param  string $part License part (head or full)
      * @return string       License content
      */
-    public static function getContent($name = 'gpl2', $part = 'head')
+    public static function getContent(string $name = 'gpl2', string $part = 'head'): string
     {
         if (!in_array($name, self::getLicenses())) {
             $name = 'gpl2';
@@ -140,8 +146,8 @@ class licenseBootstrap
             $part = 'head';
         }
 
-        return file_get_contents(
-            dirname(__FILE__) . '/licenses/' . $name . '.' . $part . '.txt'
+        return (string) file_get_contents(
+            implode(DIRECTORY_SEPARATOR, [__DIR__, My::TEMPLATE_FOLDER, $name . '.' . $part . '.txt'])
         );
     }
 
@@ -151,13 +157,13 @@ class licenseBootstrap
      * @param  string  $name       License name
      * @param  string  $content    License block content
      * @param  array   $module     Module info
-     * @param  object  $user       dcAuth instance
+     * @param  dcAuth  $user       dcAuth instance
      * @param  boolean $overwrite  Overwrite existing license
      * @param  boolean $php        Write license in PHP
      * @param  boolean $js         Write license in JS
      * @param  boolean $locales    Excludes locales folder
      */
-    public static function writeHeadContent($name, $content, $module, $user, $overwrite, $php, $js, $locales)
+    public static function writeHeadContent(string $name, string $content, array $module, dcAuth $user, bool $overwrite, bool $php, bool $js, bool $locales): void
     {
         if (!isset($module['root']) || !is_writable($module['root'])) {
             throw new Exception();
@@ -174,14 +180,14 @@ class licenseBootstrap
                 continue;
             }
 
-            $path      = $module['root'] . '/' . $file;
-            $extension = files::getExtension($file);
+            $path      = $module['root'] . DIRECTORY_SEPARATOR . $file;
+            $extension = Files::getExtension($file);
 
             if ($php && $extension == 'php') {
                 file_put_contents(
                     $file,
                     self::replacePhpContent(
-                        file_get_contents($file),
+                        (string) file_get_contents($file),
                         $license,
                         $overwrite
                     )
@@ -190,7 +196,7 @@ class licenseBootstrap
                 file_put_contents(
                     $file,
                     self::replaceJsContent(
-                        file_get_contents($file),
+                        (string) file_get_contents($file),
                         $license,
                         $overwrite
                     )
@@ -206,17 +212,17 @@ class licenseBootstrap
      * @param  array   $module    Module info
      * @param  boolean $overwrite Overwrite existing license
      */
-    public static function writeFullContent($name, $module, $overwrite)
+    public static function writeFullContent(string $name, array $module, bool $overwrite): void
     {
         if (!isset($module['root']) || !is_writable($module['root'])) {
             throw new Exception();
         }
-        if (file_exists($module['root'] . '/LICENSE') && !$overwrite) {
-            return null;
+        if (file_exists($module['root'] . DIRECTORY_SEPARATOR . 'LICENSE') && !$overwrite) {
+            return;
         }
 
         file_put_contents(
-            $module['root'] . '/LICENSE',
+            $module['root'] . DIRECTORY_SEPARATOR . 'LICENSE',
             self::getFull($name)
         );
     }
@@ -229,7 +235,7 @@ class licenseBootstrap
      * @param  boolean $overwrite Overwrite existing license
      * @return string             File content
      */
-    protected static function replacePhpContent($content, $license, $overwrite)
+    protected static function replacePhpContent(string $content, string $license, bool $overwrite): string
     {
         $clean = preg_replace(
             '/((# -- BEGIN LICENSE BLOCK ([-]+))(.*?)' .
@@ -263,7 +269,7 @@ class licenseBootstrap
      * @param  boolean $overwrite Overwrite existing license
      * @return string             File content
      */
-    protected static function replaceJsContent($content, $license, $overwrite)
+    protected static function replaceJsContent(string $content, string $license, bool $overwrite): string
     {
         $clean = preg_replace(
             '/((\/\* -- BEGIN LICENSE BLOCK ([-]+))(.*?)' .
@@ -290,10 +296,10 @@ class licenseBootstrap
      *
      * @param   string  $content    License content
      * @param   array   $module     Module info
-     * @param   object  $user       User info
+     * @param   dcAuth  $user       User info
      * @return  string              License content
      */
-    protected static function replaceInfo($content, $module, $user)
+    protected static function replaceInfo(string $content, array $module, dcAuth $user): string
     {
         return str_replace(
             [
@@ -330,10 +336,10 @@ class licenseBootstrap
      * @param  array  $res  Ignore
      * @return array        List of files
      */
-    protected static function getModuleFiles($path, $dir = '', $res = [])
+    protected static function getModuleFiles(string $path, string $dir = '', array $res = []): array
     {
-        $path = path::real($path);
-        if (!is_dir($path) || !is_readable($path)) {
+        $path = Path::real($path);
+        if ($path === false || !is_dir($path) || !is_readable($path)) {
             return [];
         }
 
@@ -341,34 +347,38 @@ class licenseBootstrap
             $dir = $path;
         }
 
-        $files = files::scandir($path);
+        $files = Files::scandir($path);
 
         foreach ($files as $file) {
             if (substr($file, 0, 1) == '.') {
                 continue;
             }
 
-            if (is_dir($path . '/' . $file)) {
+            if (is_dir($path . DIRECTORY_SEPARATOR . $file)) {
                 $res = self::getModuleFiles(
-                    $path . '/' . $file,
-                    $dir . '/' . $file,
+                    $path . DIRECTORY_SEPARATOR . $file,
+                    $dir . DIRECTORY_SEPARATOR . $file,
                     $res
                 );
             } else {
-                $res[] = empty($dir) ? $file : $dir . '/' . $file;
+                $res[] = empty($dir) ? $file : $dir . DIRECTORY_SEPARATOR . $file;
             }
         }
 
         return $res;
     }
 
-    public static function encode($a)
+    public static function encode(string $a): string
     {
-        return json_encode($a);
+        $r = json_encode($a);
+
+        return $r === false ? '' : $r;
     }
 
-    public static function decode($a)
+    public static function decode(string $a): string
     {
-        return json_decode($a, true);
+        $r = json_decode($a, true);
+
+        return $r === false ? '' : $r;
     }
 }

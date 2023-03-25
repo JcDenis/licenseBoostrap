@@ -10,50 +10,71 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_CONTEXT_ADMIN')) {
-    return null;
+declare(strict_types=1);
+
+namespace Dotclear\Plugin\licenseBootstrap;
+
+class Uninstall
+{
+    protected static $init = false;
+
+    public static function init(): bool
+    {
+        self::$init = defined('DC_RC_PATH');
+
+        return self::$init;
+    }
+
+    public static function process($uninstaller): ?bool
+    {
+        if (!self::$init) {
+            return false;
+        }
+
+        $uninstaller->addUserAction(
+            /* type */
+            'settings',
+            /* action */
+            'delete_all',
+            /* ns */
+            My::id(),
+            /* desc */
+            __('delete all settings')
+        );
+
+        $uninstaller->addUserAction(
+            /* type */
+            'plugins',
+            /* action */
+            'delete',
+            /* ns */
+            My::id(),
+            /* desc */
+            __('delete plugin files')
+        );
+
+        $uninstaller->addDirectAction(
+            /* type */
+            'settings',
+            /* action */
+            'delete_all',
+            /* ns */
+            My::id(),
+            /* desc */
+            sprintf(__('delete all %s settings'), My::id())
+        );
+
+        $uninstaller->addDirectAction(
+            /* type */
+            'plugins',
+            /* action */
+            'delete',
+            /* ns */
+            My::id(),
+            /* desc */
+            sprintf(__('delete %s plugin files'), My::id())
+        );
+
+        return true;
+    }
 }
-
-$this->addUserAction(
-    /* type */
-    'settings',
-    /* action */
-    'delete_all',
-    /* ns */
-    basename(__DIR__),
-    /* desc */
-    __('delete all settings')
-);
-
-$this->addUserAction(
-    /* type */
-    'plugins',
-    /* action */
-    'delete',
-    /* ns */
-    basename(__DIR__),
-    /* desc */
-    __('delete plugin files')
-);
-
-$this->addDirectAction(
-    /* type */
-    'settings',
-    /* action */
-    'delete_all',
-    /* ns */
-    basename(__DIR__),
-    /* desc */
-    sprintf(__('delete all %s settings'), basename(__DIR__))
-);
-
-$this->addDirectAction(
-    /* type */
-    'plugins',
-    /* action */
-    'delete',
-    /* ns */
-    basename(__DIR__),
-    /* desc */
-    sprintf(__('delete %s plugin files'), basename(__DIR__))
-);
