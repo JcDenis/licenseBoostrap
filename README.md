@@ -3,7 +3,7 @@
 [![Release](https://img.shields.io/github/v/release/JcDenis/licenseBootstrap)](https://github.com/JcDenis/licenseBootstrap/releases)
 [![Date](https://img.shields.io/github/release-date/JcDenis/licenseBootstrap)](https://github.com/JcDenis/licenseBootstrap/releases)
 [![Issues](https://img.shields.io/github/issues/JcDenis/licenseBootstrap)](https://github.com/JcDenis/licenseBootstrap/issues)
-[![Dotclear](https://img.shields.io/badge/dotclear-v2.24-blue.svg)](https://fr.dotclear.org/download)
+[![Dotclear](https://img.shields.io/badge/dotclear-v2.26-blue.svg)](https://fr.dotclear.org/download)
 [![Dotaddict](https://img.shields.io/badge/dotaddict-official-green.svg)](https://plugins.dotaddict.org/dc2/details/licenseBootstrap)
 [![License](https://img.shields.io/github/license/JcDenis/licenseBootstrap)](https://github.com/JcDenis/licenseBootstrap/blob/master/LICENSE)
 
@@ -20,7 +20,8 @@ themes and plugins from Dotclear administration pages.
  licenseBootstrap requires: 
 
   * Super administrator permissions
-  * Dotclear 2.24 
+  * Dotclear 2.26
+  * Php >= 8.1
 
 ## USAGE
 
@@ -32,6 +33,10 @@ go to ''configure plugin'', fill in form.
 
 Once it's done you can manage your modules license from menu 
 ''License bootstrap'' on sidebar or you can add dashboard icon.
+
+By default, licenseBootstrap uses old style code blocs,
+if you want a modern style you should use a more recent plugin 
+like the one called ''improve''.
 
 ## LINKS
 

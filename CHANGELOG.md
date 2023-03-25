@@ -1,3 +1,8 @@
+2023.03.25
+- require dotclea r2.26
+- require php 8.1
+- use namespace
+
 2022.12.22
 - add wtfpl license
 - use SVG icon
