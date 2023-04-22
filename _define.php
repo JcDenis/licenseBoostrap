@@ -18,7 +18,7 @@ $this->registerModule(
     'License bootstrap',
     'Add license to your plugins and themes',
     'Jean-Christian Denis',
-    '2023.03.25',
+    '2023.04.22',
     [
         'requires'    => [['core', '2.26']],
         'permissions' => null,

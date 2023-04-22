@@ -1,3 +1,10 @@
+2023.04.22
+- require dotclea r2.26
+- require php 8.1
+- add plugin Uninstaller features
+- use latest helper namespace
+- fix nullsafe warnings
+
 2023.03.25
 - require dotclea r2.26
 - require php 8.1
