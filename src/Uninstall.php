@@ -14,67 +14,59 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\licenseBootstrap;
 
-class Uninstall
-{
-    protected static $init = false;
+use dcCore;
+use dcNsProcess;
+use Dotclear\Plugin\Uninstaller\Uninstaller;
 
+class Uninstall extends dcNsProcess
+{
     public static function init(): bool
     {
-        self::$init = defined('DC_RC_PATH');
+        static::$init = defined('DC_CONTEXT_ADMIN');
 
-        return self::$init;
+        return static::$init;
     }
 
-    public static function process($uninstaller): ?bool
+    public static function process(): bool
     {
-        if (!self::$init) {
+        if (!static::$init || !dcCore::app()->plugins->moduleExists('Uninstaller')) {
             return false;
         }
 
-        $uninstaller->addUserAction(
-            /* type */
-            'settings',
-            /* action */
-            'delete_all',
-            /* ns */
-            My::id(),
-            /* desc */
-            __('delete all settings')
-        );
+        Uninstaller::instance()
+            ->addUserAction(
+                'settings',
+                'delete_all',
+                My::id()
+            )
+            ->addUserAction(
+                'plugins',
+                'delete',
+                My::id()
+            )
+            ->addUserAction(
+                'versions',
+                'delete',
+                My::id()
+            )
+            ->addDirectAction(
+                'settings',
+                'delete_all',
+                My::id()
+            )
+            ->addDirectAction(
+                'plugins',
+                'delete',
+                My::id()
+            )
+            ->addDirectAction(
+                'versions',
+                'delete',
+                My::id()
+            )
+        ;
 
-        $uninstaller->addUserAction(
-            /* type */
-            'plugins',
-            /* action */
-            'delete',
-            /* ns */
-            My::id(),
-            /* desc */
-            __('delete plugin files')
-        );
-
-        $uninstaller->addDirectAction(
-            /* type */
-            'settings',
-            /* action */
-            'delete_all',
-            /* ns */
-            My::id(),
-            /* desc */
-            sprintf(__('delete all %s settings'), My::id())
-        );
-
-        $uninstaller->addDirectAction(
-            /* type */
-            'plugins',
-            /* action */
-            'delete',
-            /* ns */
-            My::id(),
-            /* desc */
-            sprintf(__('delete %s plugin files'), My::id())
-        );
-
-        return true;
+        // no custom action
+        return false;
     }
 }
