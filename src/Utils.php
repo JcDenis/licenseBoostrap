@@ -34,6 +34,10 @@ class Utils
      */
     public static function addLicense(array $module): void
     {
+        if (is_null(dcCore::app()->auth)) {
+            return;
+        }
+
         $s = Settings::init();
 
         # --BEHAVIOR-- licenseBootstrapBeforeAddLicense
@@ -237,7 +241,7 @@ class Utils
      */
     protected static function replacePhpContent(string $content, string $license, bool $overwrite): string
     {
-        $clean = preg_replace(
+        $clean = (string) preg_replace(
             '/((# -- BEGIN LICENSE BLOCK ([-]+))(.*?)' .
             '(# -- END LICENSE BLOCK ([-]+))([\n|\r\n]+))/msi',
             '',
@@ -248,7 +252,7 @@ class Utils
             return $content;
         }
 
-        return preg_replace(
+        return (string) preg_replace(
             '/(\<\?php)/',
             '<?php' .
             "\r\n# -- BEGIN LICENSE BLOCK ----------------------------------\r\n" .

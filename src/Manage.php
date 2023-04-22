@@ -28,8 +28,8 @@ use Dotclear\Helper\Html\Form\{
     Text
 };
 use Dotclear\Helper\File\Path;
+use Dotclear\Helper\Network\Http;
 use Exception;
-use http;
 
 class Manage extends dcNsProcess
 {
@@ -79,7 +79,7 @@ class Manage extends dcNsProcess
             dcPage::addSuccessNotice(
                 __('License successfully added.')
             );
-            http::redirect(
+            Http::redirect(
                 empty($_POST['redir']) ?
                 dcCore::app()->admin->getPageURL() : $_POST['redir']
             );
@@ -212,7 +212,7 @@ class Manage extends dcNsProcess
     {
         if (!(dcCore::app()->themes instanceof dcThemes)) {
             dcCore::app()->themes = new dcThemes();
-            dcCore::app()->themes->loadModules(dcCore::app()->blog->themes_path, null);
+            dcCore::app()->themes->loadModules((string) dcCore::app()->blog?->themes_path, null);
         }
 
         return [
