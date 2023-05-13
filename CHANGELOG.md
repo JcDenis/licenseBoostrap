@@ -1,3 +1,9 @@
+2023.05.13
+- require dotclea r2.26
+- require php 8.1
+- use define php_min
+- fix dump() method
+
 2023.04.22
 - require dotclea r2.26
 - require php 8.1

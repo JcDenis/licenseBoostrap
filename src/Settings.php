@@ -107,6 +107,6 @@ class Settings
      */
     public function listSettings(): array
     {
-        return array_diff_key(get_object_vars($this), ['settings'=>'']);
+        return array_diff_key(get_object_vars($this), ['settings' => '']);
     }
 }
