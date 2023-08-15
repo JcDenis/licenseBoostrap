@@ -34,10 +34,6 @@ class Utils
      */
     public static function addLicense(array $module): void
     {
-        if (is_null(dcCore::app()->auth)) {
-            return;
-        }
-
         $s = Settings::init();
 
         # --BEHAVIOR-- licenseBootstrapBeforeAddLicense
