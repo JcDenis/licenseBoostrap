@@ -15,38 +15,19 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\licenseBootstrap;
 
 use dcCore;
+use Dotclear\Module\MyPlugin;
 
 /**
  * This module definitions.
  */
-class My
+class My extends MyPlugin
 {
     /** @var    string  Licenses default templates folder name */
     public const TEMPLATE_FOLDER = 'licenses';
 
-    /**
-     * This module id.
-     */
-    public static function id(): string
+    protected static function checkCustomContext(int $context): ?bool
     {
-        return basename(dirname(__DIR__));
-    }
-
-    /**
-     * This module name.
-     */
-    public static function name(): string
-    {
-        $name = dcCore::app()->plugins->moduleInfo(self::id(), 'name');
-
-        return __(is_string($name) ? $name : self::id());
-    }
-
-    /**
-     * This module path.
-     */
-    public static function path(): string
-    {
-        return dirname(__DIR__);
+        return $context === My::INSTALL ? null :
+            defined('DC_CONTEXT_ADMIN') && dcCore::app()->auth->isSuperAdmin();
     }
 }

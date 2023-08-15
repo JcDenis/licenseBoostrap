@@ -15,9 +15,12 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\licenseBootstrap;
 
 use dcCore;
-use dcPage;
 use dcThemes;
-use dcNsProcess;
+use Dotclear\Core\Backend\{
+    Notices,
+    Page
+};
+use Dotclear\Core\Process;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\Html\Form\{
     Checkbox,
@@ -31,19 +34,16 @@ use Dotclear\Helper\File\Path;
 use Dotclear\Helper\Network\Http;
 use Exception;
 
-class Manage extends dcNsProcess
+class Manage extends Process
 {
     public static function init(): bool
     {
-        static::$init = defined('DC_CONTEXT_ADMIN')
-            && dcCore::app()->auth?->isSuperAdmin();
-
-        return static::$init;
+        return self::status(My::checkContext(My::MANAGE));
     }
 
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 
@@ -75,13 +75,14 @@ class Manage extends dcNsProcess
                 Utils::addLicense($module);
             }
 
-            dcPage::addSuccessNotice(
+            Notices::addSuccessNotice(
                 __('License successfully added.')
             );
-            Http::redirect(
-                empty($_POST['redir']) ?
-                dcCore::app()->admin->getPageURL() : $_POST['redir']
-            );
+            if (empty($_POST['redir'])) {
+                My::redirect();
+            } else {
+                Http::redirect($_POST['redir']);
+            };
         } catch(Exception $e) {
             dcCore::app()->error->add($e->getMessage());
         }
@@ -91,28 +92,28 @@ class Manage extends dcNsProcess
 
     public static function render(): void
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return;
         }
 
         $m = self::loadModules();
 
         # Display
-        dcPage::openModule(
+        Page::openModule(
             My::name(),
-            dcPage::jsPageTabs() .
-            dcPage::jsModuleLoad(My::id() . '/js/licensebootstrap.js') .
+            Page::jsPageTabs() .
+            My::jsLoad('licensebootstrap') .
 
             # --BEHAVIOR-- licenseBootstrapAdminHeader
             dcCore::app()->callBehavior('licenseBootstrapAdminHeader')
         );
 
         echo
-        dcPage::breadcrumb([
+        Page::breadcrumb([
             __('Plugins') => '',
             My::name()    => '',
         ]) .
-        dcPage::notices();
+        Notices::getNotices();
 
         self::displayModulesList(
             $m['plugins']->getModules(),
@@ -126,9 +127,9 @@ class Manage extends dcNsProcess
             __('Installed themes')
         );
 
-        dcPage::helpBlock('licenseBootstrap');
+        Page::helpBlock('licenseBootstrap');
 
-        dcPage::closeModule();
+        Page::closeModule();
     }
 
     private static function displayModulesList(array $modules, string $type, string $title): void
@@ -185,6 +186,7 @@ class Manage extends dcNsProcess
         '<p class="checkboxes-helpers"></p>' .
         (new Para())->items([
             (new Hidden(['redir'], empty($_REQUEST['redir']) ? '' : Html::escapeHTML($_REQUEST['redir']))),
+            (new Hidden(['process'], 'Plugin')),
             (new Hidden(['p'], My::id())),
             (new Hidden(['type'], $type)),
             (new Hidden(['action'], 'addlicense')),

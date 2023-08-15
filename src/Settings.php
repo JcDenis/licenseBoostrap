@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\licenseBootstrap;
 
-use dcCore;
-
 class Settings
 {
     /** @var Settings self instance */
@@ -53,7 +51,7 @@ class Settings
      */
     public function __construct()
     {
-        $s = dcCore::app()->blog?->settings->get(My::id());
+        $s = My::settings();
 
         $this->hide_distrib     = (bool) ($s?->get('hide_distrib') ?? false);
         $this->overwrite        = (bool) ($s?->get('overwrite') ?? false);
@@ -91,8 +89,8 @@ class Settings
     public function writeSetting(string $key, mixed $value): bool
     {
         if (property_exists($this, $key) && settype($value, gettype($this->{$key})) === true) {
-            dcCore::app()->blog?->settings->get(My::id())->drop($key);
-            dcCore::app()->blog?->settings->get(My::id())->put($key, $value, gettype($this->{$key}), '', true, true);
+            My::settings()->drop($key);
+            My::settings()->put($key, $value, gettype($this->{$key}), '', true, true);
 
             return true;
         }
