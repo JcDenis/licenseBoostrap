@@ -18,7 +18,7 @@ $this->registerModule(
     'License bootstrap',
     'Add license to your plugins and themes',
     'Jean-Christian Denis',
-    '2023.05.13',
+    '2023.08.15',
     [
         'requires' => [
             ['php', '8.1'],
@@ -26,8 +26,8 @@ $this->registerModule(
         ],
         'permissions' => null,
         'type'        => 'plugin',
-        'support'     => 'https://github.com/JcDenis/' . basename(__DIR__),
-        'details'     => 'https://plugins.dotaddict.org/dc2/details/' . basename(__DIR__),
-        'repository'  => 'https://raw.githubusercontent.com/JcDenis/' . basename(__DIR__) . '/master/dcstore.xml',
+        'support'     => 'https://git.dotclear.watch/JcDenis/' . basename(__DIR__) . '/issues',
+        'details'     => 'https://git.dotclear.watch/JcDenis/' . basename(__DIR__) . '/src/branch/master/README.md',
+        'repository'  => 'https://git.dotclear.watch/JcDenis/' . basename(__DIR__) . '/raw/branch/master/dcstore.xml',
     ]
 );
